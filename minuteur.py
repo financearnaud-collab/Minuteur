@@ -1,5 +1,5 @@
 import streamlit as st
-components.html(code_html_js, height=200
+components.html(code_html_js, height=200)
 
 st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
 st.title(" ⏳ Départ de Lionel")
