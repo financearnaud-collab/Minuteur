@@ -4,19 +4,41 @@ import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
 
-# --- AJOUT DE L'IMAGE DE FOND ---
-# Remplace l'URL ci-dessous par le lien de ton choix (Unsplash, image GitHub raw, etc.)
+# --- IMAGE DE FOND ET STYLE DE LISIBILITÉ ---
+# Remplace l'URL ci-dessous par le lien de ton image
 url_image_fond = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80"
 
 st.markdown(
     f"""
     <style>
+    /* Image de fond avec assombrissement noir à 65% pour le contraste */
     .stApp {{
-        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url("{url_image_fond}");
+        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("{url_image_fond}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
+    }}
+    
+    /* Titres et sous-titres en blanc net avec ombre portée */
+    h1, h2, h3 {{
+        color: #FFFFFF !important;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+    }}
+
+    /* Encadrement du bloc metric pour le detacher du fond */
+    [data-testid="stMetric"] {{
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+    }}
+    [data-testid="stMetricLabel"] p {{
+        color: #1e293b !important;
+        font-weight: 600 !important;
+    }}
+    [data-testid="stMetricValue"] div {{
+        color: #0f172a !important;
     }}
     </style>
     """,
@@ -26,19 +48,20 @@ st.markdown(
 st.title("⏳ Départ de Lionel")
 st.subheader("Vivement le 30 octobre 2026 à 16h15")
 
-# Code HTML et JavaScript pour l'affichage dynamique, les musiques et les confettis
+# Code HTML et JavaScript avec boîte contrastée
 code_html_js = """
 <!-- Importation de la bibliothèque de confettis -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <!-- Zone du bouton pour la musique d'attente -->
 <div style="text-align: center; margin-bottom: 15px;" id="zone-bouton-musique">
-    <button id="bouton-musique" style="padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 8px; border: none; background-color: #ff4b4b; color: white; box-shadow: 1px 1px 5px rgba(0,0,0,0.2);">
+    <button id="bouton-musique" style="padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 8px; border: none; background-color: #ff4b4b; color: white; box-shadow: 1px 1px 5px rgba(0,0,0,0.3); font-weight: bold;">
         🎵 Activer la musique d'attente
     </button>
 </div>
 
-<div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #1f77b4; background-color: rgba(240, 242, 246, 0.9); padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+<!-- Boîte du minuteur sur fond blanc très opaque pour une lisibilité parfaite -->
+<div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #0f172a; background-color: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 0px 4px 15px rgba(0,0,0,0.4);">
     Chargement...
 </div>
 
