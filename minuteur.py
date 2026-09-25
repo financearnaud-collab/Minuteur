@@ -6,14 +6,18 @@ st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
 st.title("⏳ Départ de Lionel")
 st.subheader("Vivement le 30 octobre 2026 à 16h15")
 
-# Code HTML et JavaScript pour l'affichage dynamique
+# Code HTML et JavaScript pour l'affichage dynamique et les confettis
 code_html_js = """
+<!-- Importation de la bibliothèque de confettis -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #1f77b4; background-color: #f0f2f6; padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
     Chargement...
 </div>
 
 <script>
     const dateCible = new Date("2026-10-30T16:15:00").getTime();
+    let confettisLances = false; // Empêche de lancer les confettis en boucle
 
     const intervalle = setInterval(function() {
         const maintenant = new Date().getTime();
@@ -22,12 +26,33 @@ code_html_js = """
         if (difference <= 0) {
             clearInterval(intervalle);
             document.getElementById("minuteur").innerHTML = "⏰ Temps écoulé !";
+            
+            // --- LANCEMENT DES CONFETTIS ---
+            if (!confettisLances) {
+                // Premier tir
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.1 } // Les confettis partent du haut
+                });
+                
+                // Deuxième tir après 0.5 seconde pour l'effet
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 150,
+                        spread: 120,
+                        origin: { y: 0.3 }
+                    });
+                }, 500);
+
+                confettisLances = true;
+            }
             return;
         }
 
         const jours = Math.floor(difference / (1000 * 60 * 60 * 24));
         let heures = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((difference % (1000 * 60)) / (1000 * 60));
+        let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
         let secondes = Math.floor((difference % (1000 * 60)) / 1000);
 
         heures = heures < 10 ? "0" + heures : heures;
@@ -39,8 +64,8 @@ code_html_js = """
 </script>
 """
 
-# Utilisation de components.html pour autoriser l'exécution du JavaScript
-components.html(code_html_js, height=200)
+# Utilisation de components.html avec une hauteur plus grande (300) pour voir tomber les confettis
+components.html(code_html_js, height=300)
 
 
 # --- Calcul des jours ouvrés / travaillés ---
@@ -66,3 +91,5 @@ if aujourdhui < date_cible:
     )
 else:
     st.info("La date cible est atteinte ou dépassée !")
+    # Optionnel : lancer aussi les ballons natifs de Streamlit si on charge la page APRES la date
+    st.balloons()
