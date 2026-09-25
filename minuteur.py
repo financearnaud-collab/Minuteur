@@ -26,13 +26,13 @@ code_html_js = """
     const dateCible = new Date("2026-10-30T16:15:00").getTime();
     let confettisLances = false;
 
-    // --- PRÉPARATION DES MUSIQUES ---
-    // Musique d'attente (tourne en boucle)
-    const musiqueAttente = new Audio("https://cdn.pixabay.com/download/audio/2022/10/25/audio_51a2e737cb.mp3");
+    // --- PRÉPARATION DES MUSIQUES (Liens stables) ---
+    // Musique d'attente (tourne en boucle) - Lien de test stable SoundHelix
+    const musiqueAttente = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
     musiqueAttente.loop = true; 
     
-    // Musique de victoire
-    const musiqueVictoire = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3");
+    // Musique de victoire (Applaudissements) - Lien stable Google
+    const musiqueVictoire = new Audio("https://actions.google.com/sounds/v1/crowds/crowd_cheering.ogg");
 
     // --- GESTION DU BOUTON MUSIQUE D'ATTENTE ---
     let musiqueEnCours = false;
