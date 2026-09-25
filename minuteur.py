@@ -1,5 +1,6 @@
-from datetime import date, timedelta
 import streamlit as st
+import streamlit.components.v1 as components
+from datetime import date, timedelta
 
 st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
 st.title("⏳ Départ de Lionel")
@@ -26,7 +27,7 @@ code_html_js = """
 
         const jours = Math.floor(difference / (1000 * 60 * 60 * 24));
         let heures = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        let minutes = Math.floor((difference % (1000 * 60)) / (1000 * 60));
         let secondes = Math.floor((difference % (1000 * 60)) / 1000);
 
         heures = heures < 10 ? "0" + heures : heures;
@@ -38,30 +39,30 @@ code_html_js = """
 </script>
 """
 
-# Affichage du minuteur via la fonction native Streamlit
-st.html(code_html_js)
+# Utilisation de components.html pour autoriser l'exécution du JavaScript
+components.html(code_html_js, height=200)
 
 
 # --- Calcul des jours ouvrés / travaillés ---
 def calculer_jours_ouvres(debut: date, fin: date) -> int:
-  jours_ouvres = 0
-  actuel = debut
-  while actuel < fin:
-    if actuel.weekday() < 5:  # Du lundi (0) au vendredi (4)
-      jours_ouvres += 1
-    actuel += timedelta(days=1)
-  return jours_ouvres
+    jours_ouvres = 0
+    actuel = debut
+    while actuel < fin:
+        if actuel.weekday() < 5:  # Du lundi (0) au vendredi (4)
+            jours_ouvres += 1
+        actuel += timedelta(days=1)
+    return jours_ouvres
 
 
 aujourdhui = date.today()
 date_cible = date(2026, 10, 30)
 
 if aujourdhui < date_cible:
-  nb_jours_ouvres = calculer_jours_ouvres(aujourdhui, date_cible)
-  st.metric(
-      label="💼 Jours travaillés restants (lundi au vendredi)",
-      value=f"{nb_jours_ouvres} jours",
-      help="Nombre de jours ouvrés hors week-ends entre aujourd'hui et la date cible.",
-  )
+    nb_jours_ouvres = calculer_jours_ouvres(aujourdhui, date_cible)
+    st.metric(
+        label="💼 Jours travaillés restants (lundi au vendredi)",
+        value=f"{nb_jours_ouvres} jours",
+        help="Nombre de jours ouvrés hors week-ends entre aujourd'hui et la date cible."
+    )
 else:
-  st.info("La date cible est atteinte ou dépassée !")
+    st.info("La date cible est atteinte ou dépassée !")
