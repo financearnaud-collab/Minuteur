@@ -1,8 +1,8 @@
 import streamlit as st
-import streamlit.components.v1 as components
+components.html(code_html_js, height=200
 
 st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
-st.title("⏳ Départ de Lionel")
+st.title(" ⏳ Départ de Lionel")
 st.subheader("Vivement le 30 octobre 2026 à 16h15")
 
 # Code HTML et JavaScript pour un affichage fluide géré par le navigateur
