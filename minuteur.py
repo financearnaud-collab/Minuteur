@@ -6,10 +6,17 @@ st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
 st.title("⏳ Départ de Lionel")
 st.subheader("Vivement le 30 octobre 2026 à 16h15")
 
-# Code HTML et JavaScript pour l'affichage dynamique et les confettis
+# Code HTML et JavaScript pour l'affichage dynamique, les musiques et les confettis
 code_html_js = """
 <!-- Importation de la bibliothèque de confettis -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<!-- Zone du bouton pour la musique d'attente -->
+<div style="text-align: center; margin-bottom: 15px;" id="zone-bouton-musique">
+    <button id="bouton-musique" style="padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 8px; border: none; background-color: #ff4b4b; color: white; box-shadow: 1px 1px 5px rgba(0,0,0,0.2);">
+        🎵 Activer la musique d'attente
+    </button>
+</div>
 
 <div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #1f77b4; background-color: #f0f2f6; padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
     Chargement...
@@ -17,8 +24,35 @@ code_html_js = """
 
 <script>
     const dateCible = new Date("2026-10-30T16:15:00").getTime();
-    let confettisLances = false; // Empêche de lancer les confettis en boucle
+    let confettisLances = false;
 
+    // --- PRÉPARATION DES MUSIQUES ---
+    // Musique d'attente (tourne en boucle)
+    const musiqueAttente = new Audio("https://cdn.pixabay.com/download/audio/2022/10/25/audio_51a2e737cb.mp3");
+    musiqueAttente.loop = true; 
+    
+    // Musique de victoire
+    const musiqueVictoire = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3");
+
+    // --- GESTION DU BOUTON MUSIQUE D'ATTENTE ---
+    let musiqueEnCours = false;
+    const boutonMusique = document.getElementById("bouton-musique");
+    
+    boutonMusique.addEventListener("click", function() {
+        if (!musiqueEnCours) {
+            musiqueAttente.play();
+            boutonMusique.innerHTML = "🔇 Couper la musique d'attente";
+            boutonMusique.style.backgroundColor = "#1f77b4";
+            musiqueEnCours = true;
+        } else {
+            musiqueAttente.pause();
+            boutonMusique.innerHTML = "🎵 Activer la musique d'attente";
+            boutonMusique.style.backgroundColor = "#ff4b4b";
+            musiqueEnCours = false;
+        }
+    });
+
+    // --- COMPTE À REBOURS ---
     const intervalle = setInterval(function() {
         const maintenant = new Date().getTime();
         const difference = dateCible - maintenant;
@@ -27,16 +61,23 @@ code_html_js = """
             clearInterval(intervalle);
             document.getElementById("minuteur").innerHTML = "⏰ Temps écoulé !";
             
-            // --- LANCEMENT DES CONFETTIS ---
             if (!confettisLances) {
-                // Premier tir
+                // 1. Couper la musique d'attente et cacher le bouton
+                musiqueAttente.pause();
+                document.getElementById("zone-bouton-musique").style.display = "none";
+
+                // 2. Lancer la musique de victoire
+                musiqueVictoire.play().catch(function(error) {
+                    console.log("Le navigateur a bloqué la lecture audio.");
+                });
+
+                // 3. Lancer les confettis
                 confetti({
                     particleCount: 150,
                     spread: 100,
-                    origin: { y: 0.1 } // Les confettis partent du haut
+                    origin: { y: 0.1 }
                 });
                 
-                // Deuxième tir après 0.5 seconde pour l'effet
                 setTimeout(() => {
                     confetti({
                         particleCount: 150,
@@ -64,8 +105,8 @@ code_html_js = """
 </script>
 """
 
-# Utilisation de components.html avec une hauteur plus grande (300) pour voir tomber les confettis
-components.html(code_html_js, height=300)
+# Hauteur augmentée (380) pour voir le bouton, le minuteur et les confettis
+components.html(code_html_js, height=380)
 
 
 # --- Calcul des jours ouvrés / travaillés ---
@@ -91,5 +132,4 @@ if aujourdhui < date_cible:
     )
 else:
     st.info("La date cible est atteinte ou dépassée !")
-    # Optionnel : lancer aussi les ballons natifs de Streamlit si on charge la page APRES la date
     st.balloons()
