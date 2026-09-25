@@ -5,7 +5,6 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
 
 # --- IMAGE DE FOND ET STYLE DE LISIBILITÉ ---
-# Remplace l'URL ci-dessous par le lien de ton image
 url_image_fond = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80"
 
 st.markdown(
@@ -26,19 +25,19 @@ st.markdown(
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
     }}
 
-    /* Encadrement du bloc metric pour le detacher du fond */
+    /* Encadrement du bloc metric en rose pâle */
     [data-testid="stMetric"] {{
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: rgba(255, 228, 230, 0.92);
         padding: 15px 20px;
         border-radius: 12px;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
     }}
     [data-testid="stMetricLabel"] p {{
-        color: #1e293b !important;
+        color: #881337 !important;
         font-weight: 600 !important;
     }}
     [data-testid="stMetricValue"] div {{
-        color: #0f172a !important;
+        color: #4c0519 !important;
     }}
     </style>
     """,
@@ -48,7 +47,7 @@ st.markdown(
 st.title("⏳ Départ de Lionel")
 st.subheader("Vivement le 30 octobre 2026 à 16h15")
 
-# Code HTML et JavaScript avec boîte contrastée
+# Code HTML et JavaScript avec boîte rose pâle
 code_html_js = """
 <!-- Importation de la bibliothèque de confettis -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -60,8 +59,8 @@ code_html_js = """
     </button>
 </div>
 
-<!-- Boîte du minuteur sur fond blanc très opaque pour une lisibilité parfaite -->
-<div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #0f172a; background-color: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 0px 4px 15px rgba(0,0,0,0.4);">
+<!-- Boîte du minuteur sur fond rose pâle -->
+<div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #4c0519; background-color: rgba(255, 228, 230, 0.95); padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 0px 4px 15px rgba(0,0,0,0.4);">
     Chargement...
 </div>
 
@@ -148,25 +147,25 @@ components.html(code_html_js, height=380)
 
 # --- Calcul des jours ouvrés / travaillés ---
 def calculer_jours_ouvres(debut: date, fin: date) -> int:
-  jours_ouvres = 0
-  actuel = debut
-  while actuel < fin:
-    if actuel.weekday() < 5:  # Du lundi (0) au vendredi (4)
-      jours_ouvres += 1
-    actuel += timedelta(days=1)
-  return jours_ouvres
+    jours_ouvres = 0
+    actuel = debut
+    while actuel < fin:
+        if actuel.weekday() < 5:  # Du lundi (0) au vendredi (4)
+            jours_ouvres += 1
+        actuel += timedelta(days=1)
+    return jours_ouvres
 
 
 aujourdhui = date.today()
 date_cible = date(2026, 10, 30)
 
 if aujourdhui < date_cible:
-  nb_jours_ouvres = calculer_jours_ouvres(aujourdhui, date_cible)
-  st.metric(
-      label="💼 Jours travaillés restants (lundi au vendredi)",
-      value=f"{nb_jours_ouvres} jours",
-      help="Nombre de jours ouvrés hors week-ends entre aujourd'hui et la date cible.",
-  )
+    nb_jours_ouvres = calculer_jours_ouvres(aujourdhui, date_cible)
+    st.metric(
+        label="💼 Jours travaillés restants",
+        value=f"{nb_jours_ouvres} jours",
+        help="Nombre de jours ouvrés hors week-ends entre aujourd'hui et la date cible.",
+    )
 else:
-  st.info("La date cible est atteinte ou dépassée !")
-  st.balloons()
+    st.info("La date cible est atteinte ou dépassée !")
+    st.balloons()
