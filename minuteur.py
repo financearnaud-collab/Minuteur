@@ -1,11 +1,11 @@
+from datetime import date, timedelta
 import streamlit as st
-components.html(code_html_js, height=200)
 
 st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
-st.title(" ⏳ Départ de Lionel")
+st.title("⏳ Départ de Lionel")
 st.subheader("Vivement le 30 octobre 2026 à 16h15")
 
-# Code HTML et JavaScript pour un affichage fluide géré par le navigateur
+# Code HTML et JavaScript pour l'affichage dynamique
 code_html_js = """
 <div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #1f77b4; background-color: #f0f2f6; padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
     Chargement...
@@ -38,4 +38,30 @@ code_html_js = """
 </script>
 """
 
-components.html(code_html_js, height=200)
+# Affichage du minuteur via la fonction native Streamlit
+st.html(code_html_js)
+
+
+# --- Calcul des jours ouvrés / travaillés ---
+def calculer_jours_ouvres(debut: date, fin: date) -> int:
+  jours_ouvres = 0
+  actuel = debut
+  while actuel < fin:
+    if actuel.weekday() < 5:  # Du lundi (0) au vendredi (4)
+      jours_ouvres += 1
+    actuel += timedelta(days=1)
+  return jours_ouvres
+
+
+aujourdhui = date.today()
+date_cible = date(2026, 10, 30)
+
+if aujourdhui < date_cible:
+  nb_jours_ouvres = calculer_jours_ouvres(aujourdhui, date_cible)
+  st.metric(
+      label="💼 Jours travaillés restants (lundi au vendredi)",
+      value=f"{nb_jours_ouvres} jours",
+      help="Nombre de jours ouvrés hors week-ends entre aujourd'hui et la date cible.",
+  )
+else:
+  st.info("La date cible est atteinte ou dépassée !")
