@@ -1,8 +1,28 @@
+from datetime import date, timedelta
 import streamlit as st
 import streamlit.components.v1 as components
-from datetime import date, timedelta
 
 st.set_page_config(page_title="Mon Minuteur", page_icon="⏳")
+
+# --- AJOUT DE L'IMAGE DE FOND ---
+# Remplace l'URL ci-dessous par le lien de ton choix (Unsplash, image GitHub raw, etc.)
+url_image_fond = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80"
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url("{url_image_fond}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("⏳ Départ de Lionel")
 st.subheader("Vivement le 30 octobre 2026 à 16h15")
 
@@ -18,7 +38,7 @@ code_html_js = """
     </button>
 </div>
 
-<div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #1f77b4; background-color: #f0f2f6; padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+<div id="minuteur" style="text-align: center; font-size: 50px; font-weight: bold; color: #1f77b4; background-color: rgba(240, 242, 246, 0.9); padding: 30px; border-radius: 15px; font-family: sans-serif; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
     Chargement...
 </div>
 
@@ -26,12 +46,10 @@ code_html_js = """
     const dateCible = new Date("2026-10-30T16:15:00").getTime();
     let confettisLances = false;
 
-    // --- PRÉPARATION DES MUSIQUES (Liens stables) ---
-    // Musique d'attente (tourne en boucle) - Lien de test stable SoundHelix
+    // --- PRÉPARATION DES MUSIQUES ---
     const musiqueAttente = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
     musiqueAttente.loop = true; 
     
-    // Musique de victoire (Applaudissements) - Lien stable Google
     const musiqueVictoire = new Audio("https://actions.google.com/sounds/v1/crowds/crowd_cheering.ogg");
 
     // --- GESTION DU BOUTON MUSIQUE D'ATTENTE ---
@@ -62,16 +80,13 @@ code_html_js = """
             document.getElementById("minuteur").innerHTML = "⏰ Temps écoulé !";
             
             if (!confettisLances) {
-                // 1. Couper la musique d'attente et cacher le bouton
                 musiqueAttente.pause();
                 document.getElementById("zone-bouton-musique").style.display = "none";
 
-                // 2. Lancer la musique de victoire
                 musiqueVictoire.play().catch(function(error) {
                     console.log("Le navigateur a bloqué la lecture audio.");
                 });
 
-                // 3. Lancer les confettis
                 confetti({
                     particleCount: 150,
                     spread: 100,
@@ -105,31 +120,30 @@ code_html_js = """
 </script>
 """
 
-# Hauteur augmentée (380) pour voir le bouton, le minuteur et les confettis
 components.html(code_html_js, height=380)
 
 
 # --- Calcul des jours ouvrés / travaillés ---
 def calculer_jours_ouvres(debut: date, fin: date) -> int:
-    jours_ouvres = 0
-    actuel = debut
-    while actuel < fin:
-        if actuel.weekday() < 5:  # Du lundi (0) au vendredi (4)
-            jours_ouvres += 1
-        actuel += timedelta(days=1)
-    return jours_ouvres
+  jours_ouvres = 0
+  actuel = debut
+  while actuel < fin:
+    if actuel.weekday() < 5:  # Du lundi (0) au vendredi (4)
+      jours_ouvres += 1
+    actuel += timedelta(days=1)
+  return jours_ouvres
 
 
 aujourdhui = date.today()
 date_cible = date(2026, 10, 30)
 
 if aujourdhui < date_cible:
-    nb_jours_ouvres = calculer_jours_ouvres(aujourdhui, date_cible)
-    st.metric(
-        label="💼 Jours travaillés restants (lundi au vendredi)",
-        value=f"{nb_jours_ouvres} jours",
-        help="Nombre de jours ouvrés hors week-ends entre aujourd'hui et la date cible."
-    )
+  nb_jours_ouvres = calculer_jours_ouvres(aujourdhui, date_cible)
+  st.metric(
+      label="💼 Jours travaillés restants (lundi au vendredi)",
+      value=f"{nb_jours_ouvres} jours",
+      help="Nombre de jours ouvrés hors week-ends entre aujourd'hui et la date cible.",
+  )
 else:
-    st.info("La date cible est atteinte ou dépassée !")
-    st.balloons()
+  st.info("La date cible est atteinte ou dépassée !")
+  st.balloons()
