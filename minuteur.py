@@ -26,13 +26,14 @@ except FileNotFoundError:
 st.markdown(
     f"""
     <style>
-    /* Image de fond avec assombrissement noir à 65% pour bien voir les textes */
+    /* Image de fond ajustée pour s'afficher en entier */
     .stApp {{
         background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("{url_image_fond}");
-        background-size: cover;
-        background-position: center;
+        background-size: contain; /* Affiche 100% de l'image sans la rogner */
+        background-position: center top; /* Place l'image en haut au centre */
         background-repeat: no-repeat;
         background-attachment: fixed;
+        background-color: #1a1a1a; /* Fond gris foncé sur les côtés si la photo ne remplit pas l'écran */
     }}
     
     /* Titres et sous-titres en blanc net avec ombre portée */
